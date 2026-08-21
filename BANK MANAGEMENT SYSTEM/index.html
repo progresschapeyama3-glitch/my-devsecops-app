@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ModernDayTech Bank Management System</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f3f6fb;
+    color: #1f2937;
+}
+
+header {
+    background: linear-gradient(135deg, #123c69, #1769aa);
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 30px;
+}
+
+header p {
+    margin-top: 8px;
+    opacity: .9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 25px auto;
+    padding: 0 20px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.stat {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1769aa;
+    margin-top: 8px;
+}
+
+.nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+button {
+    border: none;
+    background: #1769aa;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #0d4f85;
+}
+
+button.danger {
+    background: #dc3545;
+}
+
+button.success {
+    background: #198754;
+}
+
+button.warning {
+    background: #f59e0b;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #123c69;
+}
+
+form {
+    display: grid;
+    gap: 15px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccd4df;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.account-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.account {
+    border-left: 5px solid #1769aa;
+}
+
+.account h3 {
+    color: #1769aa;
+    margin-bottom: 10px;
+}
+
+.balance {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #198754;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    padding: 13px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #123c69;
+    color: white;
+}
+
+.notification {
+    padding: 14px;
+    margin-bottom: 10px;
+    background: #e8f4ff;
+    border-left: 4px solid #1769aa;
+    border-radius: 5px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.close {
+    float: right;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.message {
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    display: none;
+}
+
+.message.success {
+    display: block;
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.message.error {
+    display: block;
+    background: #f8d7da;
+    color: #842029;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    margin-top: 30px;
+    background: #123c69;
+    color: white;
+}
+
+@media(max-width: 800px) {
+    .dashboard,
+    .account-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🏦 ModernDayTech Bank</h1>
+    <p>Bank Management System — Object-Oriented Programming Project</p>
+</header>
+
+<div class="container">
+
+    <div class="dashboard">
+        <div class="card">
+            <div>Total Accounts</div>
+            <div class="stat" id="totalAccounts">0</div>
+        </div>
+
+        <div class="card">
+            <div>Total Balance</div>
+            <div class="stat" id="totalBalance">$0.00</div>
+        </div>
+
+        <div class="card">
+            <div>Total Transactions</div>
+            <div class="stat" id="totalTransactions">0</div>
+        </div>
+
+        <div class="card">
+            <div>Notifications</div>
+            <div class="stat" id="notificationCount">0</div>
+        </div>
+    </div>
+
+    <div class="nav">
+        <button onclick="showSection('home')">Dashboard</button>
+        <button onclick="showSection('create')">Create Account</button>
+        <button onclick="showSection('accounts')">Accounts</button>
+        <button onclick="showSection('transfer')">Transfer Funds</button>
+        <button onclick="showSection('transactions')">Transactions</button>
+        <button onclick="showSection('notifications')">Notifications</button>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <!-- DASHBOARD -->
+    <section id="home" class="section active">
+        <div class="card">
+            <h2>Welcome to ModernDayTech Bank</h2>
+            <p>
+                This Bank Management System demonstrates practical
+                Object-Oriented Programming concepts including classes,
+                objects, inheritance, encapsulation and polymorphism.
+            </p>
+            <br>
+            <p>
+                Use the navigation buttons above to create accounts,
+                deposit money, withdraw money, transfer funds and view
+                transaction history.
+            </p>
+        </div>
+    </section>
+
+    <!-- CREATE ACCOUNT -->
+    <section id="create" class="section">
+        <div class="card">
+            <h2>Create New Account</h2>
+
+            <form id="createForm">
+                <div>
+                    <label>Customer Name</label>
+                    <input id="customerName" type="text"
+                           placeholder="Enter customer name" required>
+                </div>
+
+                <div>
+                    <label>Email</label>
+                    <input id="customerEmail" type="email"
+                           placeholder="Enter email address" required>
+                </div>
+
+                <div>
+                    <label>Account Type</label>
+                    <select id="accountType">
+                        <option value="Savings">Savings Account</option>
+                        <option value="Current">Current Account</option>
+                        <option value="Business">Business Account</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Initial Deposit</label>
+                    <input id="initialDeposit" type="number"
+                           min="0" step="0.01" value="0">
+                </div>
+
+                <button type="submit">Create Account</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ACCOUNTS -->
+    <section id="accounts" class="section">
+        <h2>Customer Accounts</h2>
+        <div id="accountList" class="account-grid"></div>
+    </section>
+
+    <!-- TRANSFER -->
+    <section id="transfer" class="section">
+        <div class="card">
+            <h2>Transfer Funds</h2>
+
+            <form id="transferForm">
+
+                <div>
+                    <label>From Account</label>
+                    <select id="fromAccount" required></select>
+                </div>
+
+                <div>
+                    <label>To Account</label>
+                    <select id="toAccount" required></select>
+                </div>
+
+                <div>
+                    <label>Amount</label>
+                    <input id="transferAmount"
+                           type="number"
+                           min="0.01"
+                           step="0.01"
+                           required>
+                </div>
+
+                <button type="submit">Transfer Money</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- TRANSACTIONS -->
+    <section id="transactions" class="section">
+        <div class="card">
+            <h2>Transaction History</h2>
+
+            <div style="overflow-x:auto">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Account</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionList"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section id="notifications" class="section">
+        <div class="card">
+            <h2>Notifications</h2>
+            <div id="notificationList"></div>
+        </div>
+    </section>
+
+</div>
+
+<footer>
+    <p>ModernDayTech Bank Management System</p>
+    <p>OOP Demonstration Project</p>
+</footer>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">×</span>
+        <h2 id="modalTitle">Transaction</h2>
+
+        <form id="transactionForm">
+            <input type="hidden" id="transactionAccount">
+
+            <label>Amount</label>
+            <input id="transactionAmount"
+                   type="number"
+                   min="0.01"
+                   step="0.01"
+                   required>
+
+            <br>
+
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</div>
+
+<script>
+
+/* ============================================================
+   OBJECT-ORIENTED BANK MANAGEMENT SYSTEM
+   ============================================================ */
+
+/*
+    Base Account class
+*/
+class BankAccount {
+
+    constructor(name, email, type, initialDeposit = 0) {
+
+        this.accountNumber =
+            "AC" + Math.floor(100000 + Math.random() * 900000);
+
+        this.customerName = name;
+        this.email = email;
+        this.type = type;
+        this.balance = Number(initialDeposit);
+        this.transactions = [];
+    }
+
+    deposit(amount) {
+
+        amount = Number(amount);
+
+        if (amount <= 0) {
+            throw new Error("Deposit amount must be greater than zero.");
+        }
+
+        this.balance += amount;
+
+        this.addTransaction(
+            "Deposit",
+            amount,
+            "Money deposited"
+        );
+    }
+
+    withdraw(amount) {
+
+        amount = Number(amount);
+
+        if (amount <= 0) {
+            throw new Error("Withdrawal amount must be greater than zero.");
+        }
+
+        if (amount > this.balance) {
+            throw new Error("Insufficient funds.");
+        }
+
+        this.balance -= amount;
+
+        this.addTransaction(
+            "Withdrawal",
+            amount,
+            "Money withdrawn"
+        );
+    }
+
+    addTransaction(type, amount, description) {
+
+        this.transactions.push({
+            date: new Date().toLocaleString(),
+            account: this.accountNumber,
+            type: type,
+            amount: Number(amount),
+            description: description
+        });
+    }
+}
+
+
+/*
+    Savings Account inherits from BankAccount
+*/
+class SavingsAccount extends BankAccount {
+
+    constructor(name, email, initialDeposit) {
+
+        super(
+            name,
+            email,
+            "Savings",
+            initialDeposit
+        );
+
+        this.interestRate = 3.5;
+    }
+
+    getAccountDescription() {
+
+        return "Savings account with interest rate of "
+             + this.interestRate + "%";
+    }
+}
+
+
+/*
+    Current Account inherits from BankAccount
+*/
+class CurrentAccount extends BankAccount {
+
+    constructor(name, email, initialDeposit) {
+
+        super(
+            name,
+            email,
+            "Current",
+            initialDeposit
+        );
+
+        this.overdraftLimit = 500;
+    }
+
+    getAccountDescription() {
+
+        return "Current account with overdraft limit of $"
+             + this.overdraftLimit;
+    }
+}
+
+
+/*
+    Business Account inherits from BankAccount
+*/
+class BusinessAccount extends BankAccount {
+
+    constructor(name, email, initialDeposit) {
+
+        super(
+            name,
+            email,
+            "Business",
+            initialDeposit
+        );
+
+        this.transactionFee = 2;
+    }
+
+    getAccountDescription() {
+
+        return "Business account with transaction fee of $"
+             + this.transactionFee;
+    }
+}
+
+
+/*
+    Bank class
+*/
+class Bank {
+
+    constructor() {
+
+        this.accounts = [];
+        this.notifications = [];
+
+        this.load();
+    }
+
+    createAccount(name, email, type, deposit) {
+
+        let account;
+
+        if (type === "Savings") {
+
+            account = new SavingsAccount(
+                name,
+                email,
+                deposit
+            );
+
+        } else if (type === "Current") {
+
+            account = new CurrentAccount(
+                name,
+                email,
+                deposit
+            );
+
+        } else {
+
+            account = new BusinessAccount(
+                name,
+                email,
+                deposit
+            );
+        }
+
+        if (deposit > 0) {
+
+            account.addTransaction(
+                "Deposit",
+                deposit,
+                "Initial deposit"
+            );
+        }
+
+        this.accounts.push(account);
+
+        this.notify(
+            "New " + type +
+            " account created for " + name
+        );
+
+        this.save();
+
+        return account;
+    }
+
+    findAccount(number) {
+
+        return this.accounts.find(
+            account => account.accountNumber === number
+        );
+    }
+
+    transfer(fromNumber, toNumber, amount) {
+
+        const from = this.findAccount(fromNumber);
+        const to = this.findAccount(toNumber);
+
+        if (!from || !to) {
+            throw new Error("Account not found.");
+        }
+
+        if (fromNumber === toNumber) {
+            throw new Error(
+                "You cannot transfer money to the same account."
+            );
+        }
+
+        amount = Number(amount);
+
+        if (amount <= 0) {
+            throw new Error("Transfer amount must be greater than zero.");
+        }
+
+        if (amount > from.balance) {
+            throw new Error("Insufficient funds.");
+        }
+
+        from.balance -= amount;
+        to.balance += amount;
+
+        from.addTransaction(
+            "Transfer",
+            amount,
+            "Transfer sent to " + to.accountNumber
+        );
+
+        to.addTransaction(
+            "Transfer",
+            amount,
+            "Transfer received from " + from.accountNumber
+        );
+
+        this.notify(
+            "$" + amount.toFixed(2) +
+            " transferred from " +
+            from.accountNumber +
+            " to " +
+            to.accountNumber
+        );
+
+        this.save();
+    }
+
+    notify(message) {
+
+        this.notifications.unshift({
+            message: message,
+            date: new Date().toLocaleString()
+        });
+
+        this.save();
+    }
+
+    save() {
+
+        localStorage.setItem(
+            "modernDayTechBank",
+            JSON.stringify({
+                accounts: this.accounts,
+                notifications: this.notifications
+            })
+        );
+    }
+
+    load() {
+
+        const data =
+            localStorage.getItem("modernDayTechBank");
+
+        if (!data) return;
+
+        try {
+
+            const saved = JSON.parse(data);
+
+            this.accounts = saved.accounts || [];
+            this.notifications = saved.notifications || [];
+
+        } catch (error) {
+
+            console.log("No previous bank data found.");
+        }
+    }
+}
+
+
+/* Create bank object */
+
+const bank = new Bank();
+
+let selectedAccount = null;
+let selectedTransaction = null;
+
+
+/* ============================================================
+   UI FUNCTIONS
+   ============================================================ */
+
+function showSection(id) {
+
+    document
+        .querySelectorAll(".section")
+        .forEach(section => {
+            section.classList.remove("active");
+        });
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+    updateUI();
+}
+
+
+function showMessage(text, type = "success") {
+
+    const message =
+        document.getElementById("message");
+
+    message.textContent = text;
+
+    message.className =
+        "message " + type;
+
+    setTimeout(() => {
+
+        message.className = "message";
+
+    }, 4000);
+}
+
+
+/* ============================================================
+   CREATE ACCOUNT
+   ============================================================ */
+
+document
+    .getElementById("createForm")
+    .addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+        const name =
+            document.getElementById("customerName").value.trim();
+
+        const email =
+            document.getElementById("customerEmail").value.trim();
+
+        const type =
+            document.getElementById("accountType").value;
+
+        const deposit =
+            Number(
+                document.getElementById("initialDeposit").value
+            );
+
+        try {
+
+            const account =
+                bank.createAccount(
+                    name,
+                    email,
+                    type,
+                    deposit
+                );
+
+            showMessage(
+                "Account created successfully! Account number: "
+                + account.accountNumber
+            );
+
+            this.reset();
+
+            updateUI();
+
+            showSection("accounts");
+
+        } catch (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+        }
+    });
+
+
+/* ============================================================
+   ACCOUNT DISPLAY
+   ============================================================ */
+
+function displayAccounts() {
+
+    const list =
+        document.getElementById("accountList");
+
+    list.innerHTML = "";
+
+    if (bank.accounts.length === 0) {
+
+        list.innerHTML =
+            '<div class="card"><p>No accounts have been created yet.</p></div>';
+
+        return;
+    }
+
+    bank.accounts.forEach(account => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "card account";
+
+        div.innerHTML = `
+
+            <h3>${account.type} Account</h3>
+
+            <p><strong>Customer:</strong>
+                ${account.customerName}
+            </p>
+
+            <p><strong>Email:</strong>
+                ${account.email}
+            </p>
+
+            <p><strong>Account No:</strong>
+                ${account.accountNumber}
+            </p>
+
+            <div class="balance">
+                $${Number(account.balance).toFixed(2)}
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="success"
+                    onclick="openTransaction('${account.accountNumber}', 'deposit')">
+                    Deposit
+                </button>
+
+                <button
+                    class="warning"
+                    onclick="openTransaction('${account.accountNumber}', 'withdraw')">
+                    Withdraw
+                </button>
+
+            </div>
+        `;
+
+        list.appendChild(div);
+    });
+}
+
+
+/* ============================================================
+   DEPOSIT / WITHDRAW
+   ============================================================ */
+
+function openTransaction(accountNumber, type) {
+
+    selectedAccount = accountNumber;
+    selectedTransaction = type;
+
+    const account =
+        bank.findAccount(accountNumber);
+
+    document.getElementById("modalTitle").textContent =
+        type === "deposit"
+        ? "Deposit Money"
+        : "Withdraw Money";
+
+    document.getElementById("transactionAccount").value =
+        accountNumber;
+
+    document.getElementById("transactionAmount").value = "";
+
+    document.getElementById("modal").classList.add("show");
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById("modal")
+        .classList.remove("show");
+}
+
+
+document
+    .getElementById("transactionForm")
+    .addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+        const amount =
+            Number(
+                document.getElementById("transactionAmount").value
+            );
+
+        const account =
+            bank.findAccount(selectedAccount);
+
+        try {
+
+            if (selectedTransaction === "deposit") {
+
+                account.deposit(amount);
+
+                bank.notify(
+                    "$" + amount.toFixed(2) +
+                    " deposited into " +
+                    account.accountNumber
+                );
+
+            } else {
+
+                account.withdraw(amount);
+
+                bank.notify(
+                    "$" + amount.toFixed(2) +
+                    " withdrawn from " +
+                    account.accountNumber
+                );
+            }
+
+            bank.save();
+
+            closeModal();
+
+            showMessage(
+                "Transaction completed successfully."
+            );
+
+            updateUI();
+
+        } catch (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+        }
+    });
+
+
+/* ============================================================
+   TRANSFER
+   ============================================================ */
+
+document
+    .getElementById("transferForm")
+    .addEventListener("submit", function(e) {
+
+        e.preventDefault();
+
+        const from =
+            document.getElementById("fromAccount").value;
+
+        const to =
+            document.getElementById("toAccount").value;
+
+        const amount =
+            Number(
+                document.getElementById("transferAmount").value
+            );
+
+        try {
+
+            bank.transfer(
+                from,
+                to,
+                amount
+            );
+
+            showMessage(
+                "Funds transferred successfully."
+            );
+
+            this.reset();
+
+            updateUI();
+
+        } catch (error) {
+
+            showMessage(
+                error.message,
+                "error"
+            );
+        }
+    });
+
+
+/* ============================================================
+   TRANSFER ACCOUNT DROPDOWNS
+   ============================================================ */
+
+function updateTransferAccounts() {
+
+    const from =
+        document.getElementById("fromAccount");
+
+    const to =
+        document.getElementById("toAccount");
+
+    from.innerHTML =
+        '<option value="">Select account</option>';
+
+    to.innerHTML =
+        '<option value="">Select account</option>';
+
+    bank.accounts.forEach(account => {
+
+        const text =
+            account.accountNumber +
+            " — " +
+            account.customerName +
+            " ($" +
+            Number(account.balance).toFixed(2) +
+            ")";
+
+        from.innerHTML +=
+            `<option value="${account.accountNumber}">
+                ${text}
+            </option>`;
+
+        to.innerHTML +=
+            `<option value="${account.accountNumber}">
+                ${text}
+            </option>`;
+    });
+}
+
+
+/* ============================================================
+   TRANSACTION HISTORY
+   ============================================================ */
+
+function displayTransactions() {
+
+    const list =
+        document.getElementById("transactionList");
+
+    list.innerHTML = "";
+
+    let transactions = [];
+
+    bank.accounts.forEach(account => {
+
+        transactions =
+            transactions.concat(
+                account.transactions || []
+            );
+    });
+
+    transactions.reverse();
+
+    transactions.forEach(transaction => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>${transaction.date}</td>
+
+            <td>${transaction.account}</td>
+
+            <td>${transaction.type}</td>
+
+            <td>$${Number(transaction.amount).toFixed(2)}</td>
+
+            <td>${transaction.description}</td>
+        `;
+
+        list.appendChild(row);
+    });
+
+    if (transactions.length === 0) {
+
+        list.innerHTML =
+            '<tr><td colspan="5">No transactions yet.</td></tr>';
+    }
+}
+
+
+/* ============================================================
+   NOTIFICATIONS
+   ============================================================ */
+
+function displayNotifications() {
+
+    const list =
+        document.getElementById("notificationList");
+
+    list.innerHTML = "";
+
+    if (bank.notifications.length === 0) {
+
+        list.innerHTML =
+            "<p>No notifications yet.</p>";
+
+        return;
+    }
+
+    bank.notifications.forEach(notification => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "notification";
+
+        div.innerHTML = `
+
+            <strong>${notification.message}</strong>
+            <br>
+            <small>${notification.date}</small>
+        `;
+
+        list.appendChild(div);
+    });
+}
+
+
+/* ============================================================
+   DASHBOARD STATISTICS
+   ============================================================ */
+
+function updateDashboard() {
+
+    document.getElementById("totalAccounts")
+        .textContent = bank.accounts.length;
+
+    const total =
+        bank.accounts.reduce(
+            (sum, account) =>
+                sum + Number(account.balance),
+            0
+        );
+
+    document.getElementById("totalBalance")
+        .textContent =
+        "$" + total.toFixed(2);
+
+    let transactionCount = 0;
+
+    bank.accounts.forEach(account => {
+
+        transactionCount +=
+            (account.transactions || []).length;
+    });
+
+    document.getElementById("totalTransactions")
+        .textContent = transactionCount;
+
+    document.getElementById("notificationCount")
+        .textContent =
+        bank.notifications.length;
+}
+
+
+/* ============================================================
+   UPDATE EVERYTHING
+   ============================================================ */
+
+function updateUI() {
+
+    displayAccounts();
+    updateTransferAccounts();
+    displayTransactions();
+    displayNotifications();
+    updateDashboard();
+}
+
+
+/* Initial display */
+
+updateUI();
+
+</script>
+
+</body>
+</html>
