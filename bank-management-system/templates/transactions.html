@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section-heading">
+    <div>
+        <p class="eyebrow">TRANSACTION HISTORY</p>
+        <h1>{{ account.owner.name }}</h1>
+        <p class="muted">{{ account.account_number }} • {{ account.account_type }}</p>
+    </div>
+    <a class="button secondary"
+       href="{{ url_for('account_details', account_number=account.account_number) }}">
+        Back to Account
+    </a>
+</div>
+
+<div class="table-card">
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for transaction in transactions|reverse %}
+        <tr>
+            <td>{{ transaction.timestamp.strftime("%d %b %Y %H:%M:%S") }}</td>
+            <td>{{ transaction.transaction_type }}</td>
+            <td>AED {{ "{:,.2f}".format(transaction.amount) }}</td>
+            <td>{{ transaction.description }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">No transactions recorded.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

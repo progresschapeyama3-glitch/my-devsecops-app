@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <p class="eyebrow">MODERN DAY TECH</p>
+        <h1>Bank Management System</h1>
+        <p class="muted">
+            A Python OOP and SOLID demonstration application.
+        </p>
+    </div>
+    <a class="button" href="{{ url_for('create_account') }}">
+        + Create Account
+    </a>
+</section>
+
+<section class="stats">
+    <div class="stat-card">
+        <span>Total Balance</span>
+        <strong>AED {{ "{:,.2f}".format(total_balance) }}</strong>
+    </div>
+    <div class="stat-card">
+        <span>Total Accounts</span>
+        <strong>{{ account_count }}</strong>
+    </div>
+    <div class="stat-card">
+        <span>Account Types</span>
+        <strong>3</strong>
+    </div>
+</section>
+
+<section class="section-heading">
+    <div>
+        <h2>Accounts</h2>
+        <p class="muted">Manage customer accounts and transactions.</p>
+    </div>
+</section>
+
+{% if accounts %}
+<div class="account-grid">
+    {% for account in accounts %}
+    <article class="account-card">
+        <div class="account-header">
+            <span class="badge">{{ account.account_type }}</span>
+            <span class="account-number">{{ account.account_number }}</span>
+        </div>
+
+        <h3>{{ account.owner.name }}</h3>
+        <p class="muted">{{ account.owner.email }}</p>
+
+        <div class="balance">
+            <span>Available Balance</span>
+            <strong>AED {{ "{:,.2f}".format(account.balance) }}</strong>
+        </div>
+
+        <div class="card-actions">
+            <a class="button secondary"
+               href="{{ url_for('account_details', account_number=account.account_number) }}">
+                Manage
+            </a>
+            <a class="button ghost"
+               href="{{ url_for('transactions', account_number=account.account_number) }}">
+                Transactions
+            </a>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+    <h2>No accounts yet</h2>
+    <p>Create your first bank account to start using the system.</p>
+    <a class="button" href="{{ url_for('create_account') }}">Create Account</a>
+</div>
+{% endif %}
+{% endblock %}
