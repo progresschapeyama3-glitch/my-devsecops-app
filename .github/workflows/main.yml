@@ -1,0 +1,15 @@
+name: DAST Security Scan
+
+on:
+  workflow_dispatch:
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: 'https://polite-buttercream-4ffb70.netlify.app/'
+          cmd_options: '-a'
